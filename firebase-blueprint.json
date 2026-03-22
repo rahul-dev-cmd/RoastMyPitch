@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user profile information.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The unique ID of the user." },
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "displayName": { "type": "string", "description": "The user's display name." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the user account was created." }
+      },
+      "required": ["uid", "email"]
+    },
+    "Pitch": {
+      "title": "Startup Pitch",
+      "description": "Stores a startup pitch and its associated debate.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique ID of the pitch." },
+        "userId": { "type": "string", "description": "The ID of the user who created the pitch." },
+        "content": { "type": "string", "description": "The pitch description." },
+        "finalScore": { "type": "number", "description": "The final investor score." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the pitch was created." }
+      },
+      "required": ["id", "userId", "content", "createdAt"]
+    },
+    "Message": {
+      "title": "Debate Message",
+      "description": "A single message in a pitch debate.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique ID of the message." },
+        "role": { "type": "string", "enum": ["ROASTER", "DEFENDER", "JUDGE", "USER"], "description": "The role of the speaker." },
+        "content": { "type": "string", "description": "The message content." },
+        "timestamp": { "type": "number", "description": "The timestamp of the message." }
+      },
+      "required": ["id", "role", "content", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile documents."
+    },
+    "/pitches/{pitchId}": {
+      "schema": "Pitch",
+      "description": "Pitch documents."
+    },
+    "/pitches/{pitchId}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Messages within a pitch debate."
+    }
+  }
+}

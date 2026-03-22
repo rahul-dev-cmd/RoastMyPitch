@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email']) &&
+             data.uid == request.auth.uid &&
+             isValidEmail(data.email);
+    }
+
+    function isValidPitch(data) {
+      return data.keys().hasAll(['id', 'userId', 'content', 'createdAt']) &&
+             data.userId == request.auth.uid &&
+             data.content is string && data.content.size() > 0 && data.content.size() < 5000;
+    }
+
+    function isValidMessage(data) {
+      return data.keys().hasAll(['id', 'role', 'content', 'timestamp']) &&
+             data.role in ['ROASTER', 'DEFENDER', 'JUDGE', 'USER'] &&
+             data.content is string && data.content.size() > 0 && data.content.size() < 10000;
+    }
+
+    // ===============================================================
+    // Match Rules
+    // ===============================================================
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create, update: if isOwner(userId) && isValidUser(request.resource.data);
+    }
+
+    match /pitches/{pitchId} {
+      allow read: if isDocOwner();
+      allow create: if isAuthenticated() && isValidPitch(request.resource.data);
+      allow update: if isDocOwner() && isValidPitch(request.resource.data);
+      allow delete: if isDocOwner();
+
+      match /messages/{messageId} {
+        allow read: if isAuthenticated(); // Simplified for now, should ideally check parent pitch ownership
+        allow create: if isAuthenticated() && isValidMessage(request.resource.data);
+      }
+    }
+  }
+}

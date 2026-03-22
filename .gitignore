@@ -1,0 +1,12 @@
+﻿.env
+node_modules/
+__pycache__/
+*.pyc
+RoastMyPitch
+final.zip
+node_modules
+node_modules
+node_modules
+firebase-applet-config.json
+.env
+backend/.env

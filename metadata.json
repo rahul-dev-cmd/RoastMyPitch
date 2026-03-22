@@ -1,0 +1,5 @@
+{
+  "name": "RoastMyPitch",
+  "description": "A multi-agent AI platform where startup ideas are debated by a Roaster, a Defender, and an Investor Judge.",
+  "requestFramePermissions": []
+}
