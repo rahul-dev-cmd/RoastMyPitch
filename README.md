@@ -1,6 +1,6 @@
-# PitchArena 
+# RoastMyPitch
 
-PitchArena is an AI-powered platform where your startup idea is evaluated through a live debate between three AI agents:
+RoastMyPitch is an AI-powered platform where your startup idea is evaluated through a live debate between three AI agents:
 
 -  Devil’s Advocate (criticism)
 -  Supporter (opportunities)
