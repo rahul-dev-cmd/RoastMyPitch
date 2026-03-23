@@ -1,28 +1,28 @@
-# PitchArena 🚀
+# PitchArena 
 
 PitchArena is an AI-powered platform where your startup idea is evaluated through a live debate between three AI agents:
 
-- 😈 Devil’s Advocate (criticism)
-- 😇 Supporter (opportunities)
-- ⚖️ Analyst (final evaluation)
+-  Devil’s Advocate (criticism)
+-  Supporter (opportunities)
+-  Analyst (final evaluation)
 
-## Features
+ Features
 - Real-time AI debate
 - Multi-agent interaction
 - Fundability insights
 
-## Tech Stack
-- FastAPI (Backend)
-- React + Vite (Frontend)
-- Groq API (LLM)
+ Tech Stack
+- FastAPI 
+- React + Vite 
+- Groq API 
 
-## Run Locally
+ Run Locally
 
-### Backend
+ Backend
 cd backend  
 uvicorn main:app --reload  
 
-### Frontend
+ Frontend
 npm install  
 npm run dev  
 
