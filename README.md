@@ -1,20 +1,30 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# PitchArena 🚀
 
-# Run and deploy your AI Studio app
+PitchArena is an AI-powered platform where your startup idea is evaluated through a live debate between three AI agents:
 
-This contains everything you need to run your app locally.
+- 😈 Devil’s Advocate (criticism)
+- 😇 Supporter (opportunities)
+- ⚖️ Analyst (final evaluation)
 
-View your app in AI Studio: https://ai.studio/apps/562c20bb-225c-464f-a7e1-199a9be1c268
+## Features
+- Real-time AI debate
+- Multi-agent interaction
+- Fundability insights
+
+## Tech Stack
+- FastAPI (Backend)
+- React + Vite (Frontend)
+- Groq API (LLM)
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
+### Backend
+cd backend  
+uvicorn main:app --reload  
 
+### Frontend
+npm install  
+npm run dev  
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Demo
+Live debate simulation for startup validation
