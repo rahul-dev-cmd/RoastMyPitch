@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
-import { Flame, Shield, Scale, ArrowRight, RefreshCcw, User, Info, Mail, LogIn, LogOut, Github, Twitter, Linkedin, Facebook, MapPin, Phone, Volume2, VolumeX, Cpu, Zap, Activity } from 'lucide-react';
+import { Flame, Shield, Scale, ArrowRight, RefreshCcw, User, Info, Mail, LogIn, LogOut, Github, Twitter, Linkedin, Facebook, MapPin, Phone, Cpu, Zap, Activity } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { AgentRole, Message, DebateState } from './types';
 import { AGENTS } from './constants';
-import { getAgentResponse, extractScore, generateSpeech } from './services/geminiService';
+import { extractScore } from './utils/debate';
 import bgVideo from './assets/Transition_between_energy_202603211538.mp4';
 
 interface AppUser {
@@ -86,8 +86,6 @@ export default function App() {
   const [userInput, setUserInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
   const [runtimeError, setRuntimeError] = useState<string | null>(null);
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const audioContextRef = useRef<AudioContext | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const goalRef = useRef<HTMLElement>(null);
   const servicesRef = useRef<HTMLElement>(null);
@@ -286,12 +284,6 @@ export default function App() {
                   score: newScore !== null ? newScore : prev.score,
                 }));
 
-                // Voice generation
-                if (voiceEnabled) {
-                  generateSpeech(data.content, role).then(base64Audio => {
-                    if (base64Audio) playAudio(base64Audio);
-                  });
-                }
               }
             } catch (err) {
               console.error("Error parsing SSE data line", err);
@@ -304,28 +296,6 @@ export default function App() {
       setRuntimeError(error instanceof Error ? error.message : "Error streaming debate.");
       setIsThinking(false);
       setState(prev => ({ ...prev, currentSpeaker: 'USER' }));
-    }
-  };
-
-  const playAudio = async (base64: string) => {
-    try {
-      if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      }
-      const ctx = audioContextRef.current;
-      const binaryString = window.atob(base64);
-      const len = binaryString.length;
-      const bytes = new Uint8Array(len);
-      for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      const audioBuffer = await ctx.decodeAudioData(bytes.buffer);
-      const source = ctx.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(ctx.destination);
-      source.start(0);
-    } catch (err) {
-      console.error("Audio playback error:", err);
     }
   };
 
@@ -1008,7 +978,7 @@ export default function App() {
 
         <div className="max-w-7xl mx-auto pt-12 border-t border-blue-400/20 text-center">
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-20 text-white">
-            © 2026 RoastMyPitch • Built with Gemini 3.1 • Open Innovation
+            © 2026 RoastMyPitch • Powered by Groq • Open Innovation
           </p>
         </div>
       </footer>
