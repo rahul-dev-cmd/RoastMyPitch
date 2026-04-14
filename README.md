@@ -95,4 +95,4 @@ RoastMyPitch/
 |---|---|---|
 | `GROQ_API_KEY` | `backend/.env` | Your Groq API key |
 
-Never commit your `.env` file. It's already in `.gitignore`.
+
