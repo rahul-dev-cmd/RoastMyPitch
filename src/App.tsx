@@ -9,6 +9,8 @@ import { AGENTS } from './constants';
 import { extractScore } from './utils/debate';
 import bgVideo from './assets/Transition_between_energy_202603211538.mp4';
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+
 interface AppUser {
   uid: string;
   email: string;
@@ -119,7 +121,7 @@ export default function App() {
         displayName: authMode === 'register' ? authName : "",
       };
 
-      const res = await fetch(`http://localhost:8000${endpoint}`, {
+      const res = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -152,7 +154,7 @@ export default function App() {
   const fetchHistory = async () => {
     if (!user?.uid) return;
     try {
-      const res = await fetch(`http://localhost:8000/api/history/${user.uid}`);
+      const res = await fetch(`${API_URL}/api/history/${user.uid}`);
       if (res.ok) {
         const data = await res.json();
         setHistoryData(data);
@@ -165,9 +167,9 @@ export default function App() {
   const fetchAdminData = async () => {
     if (user?.email !== 'kumari.nikita121002@gmail.com') return;
     try {
-      const resUsers = await fetch(`http://localhost:8000/api/admin/users?uid=${user.uid}`);
+      const resUsers = await fetch(`${API_URL}/api/admin/users?uid=${user.uid}`);
       if (resUsers.ok) setAdminUsers(await resUsers.json());
-      const resPitches = await fetch(`http://localhost:8000/api/admin/history?uid=${user.uid}`);
+      const resPitches = await fetch(`${API_URL}/api/admin/history?uid=${user.uid}`);
       if (resPitches.ok) setAdminPitches(await resPitches.json());
     } catch (err) {
       console.error("Failed to fetch admin data", err);
@@ -225,7 +227,7 @@ export default function App() {
     setState(prev => ({ ...prev, currentSpeaker: null })); // Disable input during stream
 
     try {
-      const response = await fetch(`http://localhost:8000${endpoint}`, {
+      const response = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
