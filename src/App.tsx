@@ -85,6 +85,7 @@ export default function App() {
   });
   const [userInput, setUserInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
+  const [runtimeError, setRuntimeError] = useState<string | null>(null);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const audioContextRef = useRef<AudioContext | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -221,6 +222,7 @@ export default function App() {
 
   // Debate sequence logic using backend Server-Sent Events
   const streamDebate = async (endpoint: '/start' | '/reply', payload: any) => {
+    setRuntimeError(null);
     setIsThinking(true);
     setState(prev => ({ ...prev, currentSpeaker: null })); // Disable input during stream
 
@@ -231,7 +233,13 @@ export default function App() {
         body: JSON.stringify(payload)
       });
 
-      if (!response.body) return;
+      if (!response.ok) {
+        throw new Error(`Backend request failed with status ${response.status}`);
+      }
+
+      if (!response.body) {
+        throw new Error('Backend did not return a response stream.');
+      }
       
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -251,6 +259,10 @@ export default function App() {
             try {
               const data = JSON.parse(dataStr);
               if (data.agent === 'done') {
+                setIsThinking(false);
+                setState(prev => ({ ...prev, currentSpeaker: 'USER' }));
+              } else if (data.agent === 'error') {
+                setRuntimeError(data.content || 'The debate request failed.');
                 setIsThinking(false);
                 setState(prev => ({ ...prev, currentSpeaker: 'USER' }));
               } else {
@@ -289,6 +301,7 @@ export default function App() {
       }
     } catch (error) {
       console.error("Error streaming debate:", error);
+      setRuntimeError(error instanceof Error ? error.message : "Error streaming debate.");
       setIsThinking(false);
       setState(prev => ({ ...prev, currentSpeaker: 'USER' }));
     }
@@ -325,6 +338,7 @@ export default function App() {
 
   const startDebate = () => {
     if (!state.pitch.trim()) return;
+    setRuntimeError(null);
     sessionRef.current = Math.random().toString(36).substring(7); // New session
     setState(prev => ({
       ...prev,
@@ -344,6 +358,7 @@ export default function App() {
 
   const handleUserReply = () => {
     if (!userInput.trim()) return;
+    setRuntimeError(null);
     
     const userMessage: Message = {
       id: Math.random().toString(36).substring(7),
@@ -367,6 +382,7 @@ export default function App() {
   };
 
   const resetDebate = () => {
+    setRuntimeError(null);
     setState({
       pitch: '',
       messages: [],
@@ -904,6 +920,11 @@ export default function App() {
 
               {/* User Interaction & Controls */}
               <div className="lg:col-span-3 mt-8 flex flex-col items-center gap-6">
+                {runtimeError && (
+                  <div className="w-full max-w-2xl rounded-2xl border border-red-400/40 bg-red-950/60 px-5 py-4 text-sm text-red-100 backdrop-blur-md">
+                    {runtimeError}
+                  </div>
+                )}
                 <div className="w-full max-w-2xl flex gap-4 p-2 pill-input bg-blue-900/30 backdrop-blur-md shadow-2xl">
                   <input
                     type="text"

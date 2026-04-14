@@ -3,14 +3,16 @@ from typing import TypedDict, List, Dict
 from groq import Groq
 import os
 from agents import DEVILS_ADVOCATE_PROMPT, SUPPORTER_PROMPT, ANALYST_PROMPT
-from dotenv import load_dotenv
-load_dotenv()
+from dotenv import dotenv_values
+import os
 
-client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+env_path = os.path.join(os.path.dirname(__file__), ".env")
+config = dotenv_values(env_path)
+client = Groq(api_key=config.get("GROQ_API_KEY") or os.environ.get("GROQ_API_KEY"))
 
 class DebateState(TypedDict):
     idea: str
-    messages: List[Dict]        # full conversation history
+    messages: List[Dict]        
     devil_response: str
     supporter_response: str
     analyst_response: str
