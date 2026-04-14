@@ -22,7 +22,7 @@ The result: a multi-perspective evaluation that mirrors what actually happens in
 - **LangGraph orchestration** — agents run as a stateful graph with memory and turn management
 - **Fundability score** — Analyst delivers a structured verdict with strengths, weaknesses, and investor readiness
 - **Auth + history** — user accounts with saved pitch history via SQLite
-- **Text-to-speech** — agent responses voiced via Google Gemini TTS
+  
 
 ## Tech Stack
 
@@ -55,7 +55,6 @@ Create a `.env` file inside `backend/`:
 
 ```
 GROQ_API_KEY=your_groq_api_key_here
-GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 Start the server:
@@ -99,7 +98,7 @@ RoastMyPitch/
 │   ├── graph.py             # LangGraph agent definitions
 │   ├── auth_db.py           # SQLite auth + pitch history
 │   ├── requirements.txt
-│   └── .env                 # API keys (never commit this)
+│   └── .env                 # API key (never commit this)
 │
 ├── src/
 │   ├── App.tsx              # Main app + auth flow
@@ -116,7 +115,7 @@ RoastMyPitch/
 | Variable | Location | Description |
 |---|---|---|
 | `GROQ_API_KEY` | `backend/.env` | Your Groq API key |
-| `GEMINI_API_KEY` | `backend/.env` | Your Google Gemini API key |
+
 
 Never commit your `.env` file. It's already in `.gitignore`.
 
