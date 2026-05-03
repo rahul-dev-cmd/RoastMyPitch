@@ -1,0 +1,10 @@
+
+# Tell GitHub to ignore frontend files for language stats
+src/* linguist-vendored
+*.ts linguist-vendored
+*.tsx linguist-vendored
+*.json linguist-vendored
+*.html linguist-vendored
+
+# Highlight Python as the main language
+*.py linguist-detectable
